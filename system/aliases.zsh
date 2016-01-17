@@ -30,8 +30,10 @@ fi
 
 if [ "$(uname -s)" != "Darwin" ]; then
   if [ -e /usr/bin/xdg-open ]; then
-    alias open="xdg-open"
+    alias o="xdg-open"
   fi
+else
+  alias o="open"
 fi
 
 # greps non ascii chars
