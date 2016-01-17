@@ -14,8 +14,9 @@
 #   $ e /usr/local
 #   # => opens the specified directory in your editor
 
-if [ "$1" = "" ] ; then
-  exec "$EDITOR" . > /tmp/editor-log 2>&1 &
-else
-  exec "$EDITOR" "$1" > /tmp/editor-log 2>&1 &
-fi
+# if [ "$1" = "" ] ; then
+#   "$EDITOR" . > /tmp/editor-log 2>&1 &
+# else
+#   "$EDITOR" "$1" > /tmp/editor-log 2>&1 &
+# fi
+$EDITOR
