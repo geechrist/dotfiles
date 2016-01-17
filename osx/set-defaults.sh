@@ -98,38 +98,6 @@ defaults write com.apple.dock autohide -bool true
 defaults write com.apple.dock launchanim -bool false
 
 #
-# Transmission
-#
-
-# Use `~/Downloads/Incomplete` to store incomplete downloads
-defaults write org.m0k.transmission UseIncompleteDownloadFolder -bool true
-defaults write org.m0k.transmission IncompleteDownloadFolder -string "${HOME}/Downloads/Incomplete"
-
-# Don't prompt for confirmation before downloading
-defaults write org.m0k.transmission DownloadAsk -bool false
-
-# Trash original torrent files
-defaults write org.m0k.transmission DeleteOriginalTorrent -bool true
-
-# Hide the donate message
-defaults write org.m0k.transmission WarningDonate -bool false
-
-# Hide the legal disclaimer
-defaults write org.m0k.transmission WarningLegal -bool false
-
-#
-# Mail
-#
-
-# Add the keyboard shortcut CMD + Enter to send an email in Mail.app
-defaults write com.apple.mail NSUserKeyEquivalents -dict-add "Send" "@\\U21a9"
-
-
-# Disable smart quotes as it's annoying for messages that contain code
-defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticQuoteSubstitutionEnabled" -bool false
-
-
-#
 # Others
 #
 
@@ -168,23 +136,9 @@ sudo mv /Applications/iTunes.app/Contents/MacOS/iTunesHelper.app{,-disabled} &>/
 # stop play button from launching iTunes
 launchctl unload -w /System/Library/LaunchAgents/com.apple.rcd.plist
 
-# also this spotify web helper
-mv ~/Applications/Spotify.app/Contents/MacOS/SpotifyWebHelper{,-disabled} &>/dev/null
-
 # Android File Transfer disable auto-open when connect.
 mv "/opt/homebrew-cask/Caskroom/android-file-transfer/latest/Android File Transfer.app/Contents/Resources/Android File Transfer Agent.app"{,_DISABLED} || true
 mv "$HOME/Library/Application Support/Google/Android File Transfer/Android File Transfer Agent.app"{,_DISABLED} || true
-
-
-#
-# Terminals
-#
-curl -o "/tmp/terminal-ocean-dark.terminal" -silent \
-  "https://raw.githubusercontent.com/mdo/ocean-terminal/master/terminal-ocean-dark.terminal"
-open "/tmp/terminal-ocean-dark.terminal"
-sleep 1
-defaults write com.apple.terminal "Default Window Settings" -string "terminal-ocean-dark"
-defaults write com.apple.terminal "Startup Window Settings" -string "terminal-ocean-dark"
 
 #
 # Kill related apps
