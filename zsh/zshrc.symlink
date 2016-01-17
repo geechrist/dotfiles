@@ -3,7 +3,7 @@
 export ZSH="$HOME/.dotfiles"
 
 # your project folder that we can `c [tab]` to
-export PROJECTS="$HOME/Code"
+export PROJECTS="$HOME/Workspace/spike"
 
 # all of our zsh files
 typeset -U config_files
@@ -36,3 +36,5 @@ unset config_files
 # use .localrc for SUPER SECRET CRAP that you don't
 # want in your public, versioned repo.
 [[ -a ~/.localrc ]] && source ~/.localrc
+
+export PATH="$(consolidate-path)"
