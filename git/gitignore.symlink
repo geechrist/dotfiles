@@ -1,12 +1,3 @@
-.java-version
 .DS_Store
-.svn
 *~
 *.swp
-*.orig
-*.rbc
-.idea
-*.iml
-.classpath
-.project
-.settings
