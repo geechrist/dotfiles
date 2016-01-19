@@ -7,3 +7,6 @@ bind generic <Ctrl-k> :?^@@
 
 # Open the commit on Github:
 bind generic B @sh -c "open 'https://'$(git remote -v | grep -Eo 'github.com[:/][^.]+' | head -1 | tr : /)'/commit/%(commit)'"
+
+# copy the current commit ID to the clipboard
+bind generic I @sh -c "echo %(commit) | pbcopy"
