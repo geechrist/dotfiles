@@ -1,0 +1,9 @@
+# User-defined internal command that reloads ~/.tigrc
+bind generic S :source ~/.tigrc
+
+# Add keybinding to quickly jump to the next diff chunk in the stage view
+bind generic <Ctrl-j> :/^@@
+bind generic <Ctrl-k> :?^@@
+
+# Open the commit on Github:
+bind generic B @sh -c "open 'https://'$(git remote -v | grep -Eo 'github.com[:/][^.]+' | head -1 | tr : /)'/commit/%(commit)'"
