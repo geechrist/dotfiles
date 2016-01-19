@@ -1,0 +1,2 @@
+tmux.symlink/**
+!tmux.symlink/plugins/tpm
