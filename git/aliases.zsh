@@ -1,4 +1,11 @@
 #!/bin/sh
+
+hub_path=$(which hub)
+if (( $+commands[hub] ))
+then
+  alias git=$hub_path
+fi
+
 alias gl='git pull --prune'
 alias glg="git log --graph --decorate --oneline --abbrev-commit"
 alias gp='git push origin HEAD'
