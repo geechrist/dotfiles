@@ -1,2 +1,5 @@
 #!/bin/zsh
-source "$(brew --prefix)/share/antibody.zsh"
+antibody() {
+  eval "$(command antibody init -)"
+  antibody "$@"
+}

@@ -1,18 +1,30 @@
 #!/bin/sh
-# docs
-go get -u golang.org/x/tools/cmd/godoc
-# rename funcs
-go get -u golang.org/x/tools/cmd/gorename
-# coverage
-go get -u golang.org/x/tools/cmd/cover
-# multi-arch compiler
-go get -u github.com/mitchellh/gox
-# linter
-go get -u github.com/alecthomas/gometalinter
-# repl
-go get -u github.com/motemen/gore
-# stringer
-go get golang.org/x/tools/cmd/stringer
+if [ "$(which go)" ] && [ ! -z "$GOPATH" ]; then
+  mkdir -p "$GOPATH/bin" "$GOPATH/src/github.com/"
 
-"$GOPATH"/bin/gox -build-toolchain
-"$GOPATH"/bin/gometalinter --install --update
+  packages="
+    github.com/adjust/go-wrk
+    github.com/alecthomas/gometalinter
+    github.com/golang/lint/golint
+    github.com/lukehoban/go-outline
+    github.com/mitchellh/gox
+    github.com/motemen/gore
+    github.com/newhook/go-symbols
+    github.com/nsf/gocode
+    github.com/rogpeppe/godef
+    github.com/tpng/gopkgs
+    golang.org/x/tools/cmd/cover
+    golang.org/x/tools/cmd/godoc
+    golang.org/x/tools/cmd/goimports
+    golang.org/x/tools/cmd/gorename
+    golang.org/x/tools/cmd/guru
+    golang.org/x/tools/cmd/stringer
+    sourcegraph.com/sqs/goreturns
+  "
+
+  for pkg in $packages; do
+    go get -u "$pkg"
+  done
+  "$GOPATH"/bin/gox -build-toolchain
+  "$GOPATH"/bin/gometalinter --install --update
+fi

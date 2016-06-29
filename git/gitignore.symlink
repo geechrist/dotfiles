@@ -1,3 +1,11 @@
 .DS_Store
 *~
 *.swp
+*.orig
+*.rbc
+.idea
+*.iml
+.classpath
+.project
+.settings
+.ruby-version

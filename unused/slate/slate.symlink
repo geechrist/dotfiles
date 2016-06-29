@@ -9,7 +9,7 @@ config keyboardLayout qwerty
 
 # App Aliases
 alias browser 'Google Chrome'
-alias editor 'Sublime Text'
+alias editor 'Atom'
 alias terminal 'iTerm'
 
 # Positions aliases
