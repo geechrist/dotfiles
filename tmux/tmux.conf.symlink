@@ -1,6 +1,5 @@
 # OPTIONS
 set -g prefix C-space
-# set -g mode-keys vi
 set -g base-index 1
 
 set -g status-fg white
@@ -15,9 +14,9 @@ setw -g window-status-current-bg default
 setw -g window-status-current-attr dim
 set -g status-justify centre
 set -g status-left-length 70
-set -g status-left "#[fg=magenta]#{session_name} #[fg=green]#h#[fg=white]@#[fg=blue]#(ifconfig en0 | grep 'inet ' | awk '{print $2}') #(ifconfig en1 | grep 'inet ' | awk '{print \"en1 \" $2}') #[fg=red]#(ifconfig ipsec0 | grep 'inet ' | awk '{print \"vpn \" $2}') "
+set -g status-left "#[fg=magenta]#{session_name} #[fg=cyan] %a %d %h %H:%M"
 set -g status-right-length 60
-set -g status-right '#[fg=cyan] %a %d %h %H:%M'
+set -g status-right "#[fg=green]#h#[fg=white]@#[fg=blue]#(ifconfig en0 | grep 'inet ' | awk '{print $2}')"
 # set-option -g status-position top
 
 # KEY BINDINGS
@@ -25,23 +24,15 @@ set -g status-right '#[fg=cyan] %a %d %h %H:%M'
 bind m setw monitor-activity
 bind _ command-prompt -p 'monitor-silence (seconds)' 'setw monitor-silence %%'
 bind-key C-Space last-window
-bind-key -t vi-copy 'v' begin-selection
-bind-key -t vi-copy 'y' copy-selection
+set -g mode-keys vi
+bind-key -Tcopy-mode-vi 'v' send -X begin-selection
+bind-key -Tcopy-mode-vi 'y' send -X copy-selection
 
 # tmux plugin manager: github.com/tmux-plugins/tpm
 set -g @plugin 'tmux-plugins/tpm'
 set -g @plugin 'tmux-plugins/tmux-sensible'
 set -g @plugin 'tmux-plugins/tmux-pain-control'
-set -g @plugin 'tmux-plugins/tmux-yank'
-set -g @plugin 'tmux-plugins/tmux-battery'
 set -g @plugin 'jbnicolai/tmux-fpp'
-
-# copycat saved searches
-# rails request
-set -g @copycat_search_C-e '^Processing[[:space:]]by[[:space:]][^[:space:]]*'
-# digital ocean instance id select
-set -g @copycat_search_D '^[[:digit:]]+'
-set -g @plugin 'tmux-plugins/tmux-copycat'
 
 # install tpm if not already installed
 if "test ! -d ~/.tmux/plugins/tpm" \
