@@ -1,0 +1,44 @@
+[user]
+	name = Zhen She
+	email = geechrist@gmail.com
+[core]
+  excludesfile = ~/.gitignore
+	autocrlf = input
+	pager = tig
+  editor = vim
+  compression = -1
+  autocrlf = input
+  whitespace = trailing-space,space-before-tab
+  precomposeunicode = true
+	ignorecase = false
+[alias]
+	ci = commit
+	co = checkout
+	br = branch
+	st = status
+	unstash = stash pop
+  pr = pull-request
+[color]
+  pager = no
+	status = auto
+	branch = auto
+	interactive = auto
+	diff = auto
+	ui = always
+[push]
+	default = simple
+[merge]
+	tool = vimdiff3
+	conflictstyle = diff3
+	ff = false
+[mergetool]
+	prompt = false
+[credential]
+	helper = osxkeychain
+[help]
+  autocorrect = 1
+[grep]
+  extendRegexp = true
+  lineNumber   = true
+[mergetool "vimdiff3"]
+	cmd = vim -f -d -c \"wincmd J\" \"$MERGED\" \"$LOCAL\" \"$BASE\" \"$REMOTE\"
