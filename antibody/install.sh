@@ -1,9 +1,8 @@
 #!/bin/sh
-if [ "$(uname -s)" = "Darwin" ]; then
-  if [ ! "$(which antibody)" ]; then
-    brew tap getantibody/homebrew-antibody
-    brew install antibody
-  fi
+if which brew >/dev/null 2>&1; then
+	brew install getantibody/tap/antibody || brew upgrade antibody
 else
-  curl -sL https://git.io/vwMNi | sh -s
+	curl -sL https://git.io/antibody | sh -s
 fi
+antibody bundle <"$DOTFILES/antibody/bundles.txt" >~/.zsh_plugins.sh
+antibody update

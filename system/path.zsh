@@ -1,3 +1,2 @@
 #!/bin/sh
-export PATH="$PATH:$ZSH/bin"
-export MANPATH="$MANPATH:/usr/local/opt/coreutils/libexec/gnuman"
+export PATH="$PATH:$DOTFILES/bin"

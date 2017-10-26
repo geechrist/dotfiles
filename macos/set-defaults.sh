@@ -1,7 +1,7 @@
 #!/bin/sh
-# Sets reasonable OS X defaults.
+# Sets reasonable macOS defaults.
 #
-# Or, in other words, set shit how I like in OS X.
+# Or, in other words, set shit how I like in macOS.
 #
 # The original idea (and a couple settings) were grabbed from:
 #   https://github.com/mathiasbynens/dotfiles/blob/master/.osx
@@ -10,18 +10,18 @@
 #
 # Run ./set-defaults.sh and you'll be good to go.
 if [ "$(uname -s)" != "Darwin" ]; then
-  exit 0
+	exit 0
 fi
 
 set +e
 
 disable_agent() {
-  mv "$1" "$1_DISABLED" >/dev/null 2>&1 ||
-    sudo mv "$1" "$1_DISABLED" >/dev/null 2>&1
+	mv "$1" "$1_DISABLED" >/dev/null 2>&1 ||
+		sudo mv "$1" "$1_DISABLED" >/dev/null 2>&1
 }
 
 unload_agent() {
-  launchctl unload -w "$1" >/dev/null 2>&1
+	launchctl unload -w "$1" >/dev/null 2>&1
 }
 
 test -z "$TRAVIS_JOB_ID" && sudo -v
@@ -37,15 +37,12 @@ defaults write com.apple.NetworkBrowser BrowseAllInterfaces 1
 echo "  › Show the ~/Library folder"
 chflags nohidden ~/Library
 
+echo "  › Show the /Volumes folder"
+sudo chflags nohidden /Volumes
+
 echo "  › Set a really fast key repeat"
-defaults write NSGlobalDomain KeyRepeat -int 0
-
-echo "  › Run the screensaver if we're in the bottom-left hot corner"
-defaults write com.apple.dock wvous-bl-corner -int 5
-defaults write com.apple.dock wvous-bl-modifier -int 0
-
-echo "  › Disable transparency"
-defaults write com.apple.universalaccess reduceTransparency -bool true
+defaults write NSGlobalDomain KeyRepeat -int 2
+defaults write NSGlobalDomain InitialKeyRepeat -int 15
 
 echo "  › Enable text replacement almost everywhere"
 defaults write -g WebAutomaticTextReplacementEnabled -bool true
@@ -100,14 +97,14 @@ echo "  › Show battery percent"
 defaults write com.apple.menuextra.battery ShowPercent -bool true
 
 if [ ! -z "$TRAVIS_JOB_ID" ]; then
-  echo "  › Speed up wake from sleep to 24 hours from an hour"
-  # http://www.cultofmac.com/221392/quick-hack-speeds-up-retina-macbooks-wake-from-sleep-os-x-tips/
-  sudo pmset -a standbydelay 86400
+	echo "  › Speed up wake from sleep to 24 hours from an hour"
+	# http://www.cultofmac.com/221392/quick-hack-speeds-up-retina-macbooks-wake-from-sleep-os-x-tips/
+	sudo pmset -a standbydelay 86400
 fi
 
 echo "  › Removing duplicates in the 'Open With' menu"
 /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister \
-  -kill -r -domain local -domain system -domain user
+	-kill -r -domain local -domain system -domain user
 
 #############################
 
@@ -132,23 +129,24 @@ defaults write com.apple.finder ShowStatusBar -bool true
 echo "  › Show path bar"
 defaults write com.apple.finder ShowPathbar -bool true
 
-echo "  › Allow text selection in the Quick Look window"
-defaults write com.apple.finder QLEnableTextSelection -bool true
-
 echo "  › Disable the warning before emptying the Trash"
 defaults write com.apple.finder WarnOnEmptyTrash -bool false
 
 echo "  › Save to disk by default, instead of iCloud"
 defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
 
-echo "  › Disable Photos.app from starting everytime a device is plugged in"
-defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool true
-
 echo "  › Display full POSIX path as Finder window title"
 defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
 
 echo "  › Disable the warning when changing a file extension"
 defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+
+#############################
+
+echo ""
+echo "› Photos:"
+echo "  › Disable it from starting everytime a device is plugged in"
+defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool true
 
 #############################
 
@@ -232,13 +230,30 @@ defaults write org.m0k.transmission BlocklistURL -string "http://john.bitsurge.n
 echo ""
 echo "› Mail:"
 echo "  › Add the keyboard shortcut CMD + Enter to send an email"
-defaults write com.apple.mail NSUserKeyEquivalents -dict-add "Send" "@\\U21a9"
+defaults write com.apple.mail NSUserKeyEquivalents -dict-add "Send" "@\U21a9"
+# shellcheck disable=SC2016
+defaults write com.apple.mail NSUserKeyEquivalents -dict-add "Archive" '@$e'
 
 echo "  › Disable smart quotes as it's annoying for messages that contain code"
 defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticQuoteSubstitutionEnabled" -bool false
 
 echo "  › Set email addresses to copy as 'foo@example.com' instead of 'Foo Bar <foo@example.com>'"
 defaults write com.apple.mail AddressesIncludeNameOnPasteboard -bool false
+
+echo "  › Display emails in threaded mode, sorted by date (oldest at the top)"
+defaults write com.apple.mail DraftsViewerAttributes -dict-add "DisplayInThreadedMode" -string "yes"
+defaults write com.apple.mail DraftsViewerAttributes -dict-add "SortedDescending" -string "yes"
+defaults write com.apple.mail DraftsViewerAttributes -dict-add "SortOrder" -string "received-date"
+
+echo "  › Disable inline attachments (just show the icons)"
+defaults write com.apple.mail DisableInlineAttachmentViewing -bool true
+
+echo "  › Disable automatic spell checking"
+defaults write com.apple.mail SpellCheckingBehavior -string "NoSpellCheckingEnabled"
+
+echo "  ›  Disable send and reply animations in Mail.app"
+defaults write com.apple.mail DisableReplyAnimations -bool true
+defaults write com.apple.mail DisableSendAnimations -bool true
 
 #############################
 
@@ -254,10 +269,26 @@ echo "› Time Machine:"
 echo "  › Prevent Time Machine from prompting to use new hard drives as backup volume"
 defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
 
-if [ ! -z "$TRAVIS_JOB_ID" ]; then
-  echo "  › Disable local backups"
-  # https://classicyuppie.com/what-crap-is-this-os-xs-mobilebackups/
-  sudo tmutil disablelocal
+###############################################################################
+# SSD-specific tweaks                                                         #
+###############################################################################
+if [ ! -z "$TRAVIS_JOB_ID" ] && diskutil info disk0 | grep SSD >/dev/null 2>&1; then
+	echo "  › Disable local backups"
+	# https://classicyuppie.com/what-crap-is-this-os-xs-mobilebackups/
+	sudo tmutil disablelocal
+
+	echo "  › Disable hibernation (speeds up entering sleep mode)"
+	sudo pmset -a hibernatemode 0
+
+	echo "  › Remove the sleep image file to save disk space"
+	sudo rm /private/var/vm/sleepimage
+	echo "  › Create a zero-byte file instead..."
+	sudo touch /private/var/vm/sleepimage
+	echo "  › ...and make sure it can’t be rewritten"
+	sudo chflags uchg /private/var/vm/sleepimage
+
+	echo "  ›  Disable the sudden motion sensor as it’s not useful for SSDs"
+	sudo pmset -a sms 0
 fi
 
 #############################
@@ -265,10 +296,10 @@ fi
 echo ""
 echo "› Media:"
 if [ -z "$KEEP_ITUNES" ]; then
-  echo "  › Disable iTunes helper"
-  disable_agent /Applications/iTunes.app/Contents/MacOS/iTunesHelper.app
-  echo "  › Prevent play button from launching iTunes"
-  unload_agent /System/Library/LaunchAgents/com.apple.rcd.plist
+	echo "  › Disable iTunes helper"
+	disable_agent /Applications/iTunes.app/Contents/MacOS/iTunesHelper.app
+	echo "  › Prevent play button from launching iTunes"
+	unload_agent /System/Library/LaunchAgents/com.apple.rcd.plist
 fi
 
 echo "  › Disable Spotify web helper"
@@ -306,44 +337,10 @@ defaults write com.twitter.twitter-mac HideInBackground -bool true
 #############################
 
 echo ""
-echo "› Text replacements:"
-echo "  ›  rsrs"
-defaults write -g NSUserDictionaryReplacementItems -array-add \
-  '{
-    on = 1;
-    replace = rsrs;
-    with = "( \\U0361\\U00b0 \\U035c\\U0296 \\U0361\\U00b0)";
-  }'
-
-echo "  ›  fuckthat"
-defaults write -g NSUserDictionaryReplacementItems -array-add \
-  '{
-      on = 1;
-      replace = fuckthat;
-      with = "\\U2768\\U256f\\U00b0\\U25a1\\U00b0\\U2769\\U256f\\Ufe35\\U253b\\U2501\\U253b";
-  }'
-
-echo "  ›  dontcare"
-defaults write -g NSUserDictionaryReplacementItems -array-add \
-  '{
-      on = 1;
-      replace = dontcare;
-      with = "\\U00af\\\\_(\\U30c4)_/\\U00af";
-  }'
-
-echo "  ›  dafuq"
-defaults write -g NSUserDictionaryReplacementItems -array-add \
-  '{
-      on = 1;
-      replace = dafuq;
-      with = "\\U0ca0_\\U0ca0";
-  }'
-
-echo ""
 echo "› Kill related apps"
 for app in "Activity Monitor" "Address Book" "Calendar" "Contacts" "cfprefsd" \
-  "Dock" "Finder" "Mail" "Messages" "Safari" "SystemUIServer" \
-  "Terminal" "Transmission"; do
-  killall "$app" > /dev/null 2>&1
+	"Dock" "Finder" "Mail" "Messages" "Safari" "SystemUIServer" \
+	"Terminal" "Transmission" "Photos"; do
+	killall "$app" >/dev/null 2>&1
 done
 set -e
